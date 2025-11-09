@@ -4,10 +4,9 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Login</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content class="ion-padding">
+  <ion-input label="Usuario" label-placement="floating" [(ngModel)]="user.username"></ion-input>
+  <ion-input label="Contraseña" label-placement="floating" type="password"></ion-input>
+  <ion-button expand="block" (click)="login()">Ingresar</ion-button>
+  <ion-button expand="block" fill="clear" routerLink="/register">Registrarse</ion-button>
 </ion-content>
