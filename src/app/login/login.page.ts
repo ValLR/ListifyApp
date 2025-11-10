@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { Router, NavigationExtras, RouterModule } from '@angular/router';
 
@@ -13,21 +13,22 @@ import { Router, NavigationExtras, RouterModule } from '@angular/router';
 })
 export class LoginPage implements OnInit {
 
-  user = {
-    username: ''
-  }
-
   constructor(private router: Router) { }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
-  login() {
-    let navigationExtras: NavigationExtras = {
-      queryParams: {
-        'usuario': this.user.username
-      }
+  login(form: NgForm) {
+    if (form.invalid) {
+      return;
     }
+
+    const username = form.value.username;
+
+    const navigationExtras: NavigationExtras = {
+      queryParams: {
+        user: username
+      }
+    };
     this.router.navigate(['/home'], navigationExtras);
-  };
+  }
 }
