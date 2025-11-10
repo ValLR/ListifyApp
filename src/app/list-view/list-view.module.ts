@@ -14,8 +14,7 @@ import { ListViewPage } from './list-view.page';
     FormsModule,
     IonicModule,
     ListViewPageRoutingModule,
-    ListViewPage
+    ListViewPage,
   ],
-  declarations: []
 })
 export class ListViewPageModule {}
