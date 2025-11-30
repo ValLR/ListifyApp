@@ -45,27 +45,31 @@ export class HomePage implements OnInit {
   }
 
   loadLists() {
-    this.shoppingListService.getLists().subscribe(res => {
-      console.log("Listas cargadas:", res);
-      this.shoppingLists = res;
+    this.shoppingListService.getLists().subscribe({
+      next: (res) => {
+        console.log("Listas cargadas desde API");
+        this.shoppingLists = res;
+        localStorage.setItem('backup_lists', JSON.stringify(res));
+      },
+      error: (err) => {
+        console.error("Error de API, usando datos Offline", err);
+        const backup = localStorage.getItem('backup_lists');
+        if (backup) {
+          this.shoppingLists = JSON.parse(backup);
+          this.presentToast('Modo Offline: Usando datos guardados');
+        } else {
+          this.presentToast('Error de conexión y sin datos guardados');
+        }
+      }
     });
   }
 
   async createNewList() {
     const alert = await this.alertCtrl.create({
       header: 'Nueva Lista',
-      inputs: [
-        {
-          name: 'nombre',
-          type: 'text',
-          placeholder: 'Ej: Compra Mensual'
-        }
-      ],
+      inputs: [{ name: 'nombre', type: 'text', placeholder: 'Ej: Compra Mensual' }],
       buttons: [
-        {
-          text: 'Cancelar',
-          role: 'cancel'
-        },
+        { text: 'Cancelar', role: 'cancel' },
         {
           text: 'Crear',
           handler: (data) => {
@@ -76,7 +80,6 @@ export class HomePage implements OnInit {
         }
       ]
     });
-
     await alert.present();
   }
 
@@ -89,8 +92,10 @@ export class HomePage implements OnInit {
 
     this.shoppingListService.createList(newList).subscribe(res => {
       console.log("Lista creada en API con ID: ", res.id);
-      
-      this.shoppingLists.push(res);      
+    
+      this.shoppingLists.push(res);
+      localStorage.setItem('backup_lists', JSON.stringify(this.shoppingLists));
+
       this.goToList(res.id); 
       this.presentToast('Lista creada exitosamente');
     });
@@ -98,9 +103,15 @@ export class HomePage implements OnInit {
 
   deleteList(index: number) {
     const list = this.shoppingLists[index];
-    this.shoppingListService.deleteList(list.id).subscribe(() => {
-      this.shoppingLists.splice(index, 1);
-      this.presentToast('Lista eliminada');
+    this.shoppingListService.deleteList(list.id).subscribe({
+      next: () => {
+        this.shoppingLists.splice(index, 1);
+        localStorage.setItem('backup_lists', JSON.stringify(this.shoppingLists));
+        this.presentToast('Lista eliminada');
+      },
+      error: () => {
+        this.presentToast('No se puede borrar offline');
+      }
     });
   }
 
