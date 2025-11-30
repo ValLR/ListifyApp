@@ -121,12 +121,11 @@ export class HomePage implements OnInit {
     this.shoppingListService.deleteList(list.id).subscribe({
       next: () => {
         this.shoppingLists.splice(index, 1);
-        localStorage.setItem('backup_lists', JSON.stringify(this.shoppingLists));
+        this.updateLocalBackup(); 
         this.presentToast('Lista eliminada');
       },
       error: () => {
-        this.presentToast('No se puede borrar offline');
-      }
+        this.presentToast('Fallo al conectar: No se puede eliminar sin conexión.');      }
     });
   }
 
