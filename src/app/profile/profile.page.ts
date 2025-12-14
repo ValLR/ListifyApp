@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { DbserviceService } from '../services/dbservice';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
+import { Geolocation } from '@capacitor/geolocation';
 
 @Component({
   selector: 'app-profile',
@@ -16,6 +17,10 @@ export class ProfilePage implements OnInit {
   totalItems: number = 0;
   lastListId: string = 'Ninguna';
   profileImage: string | undefined;
+
+  latitude: number | null = null;
+  longitude: number | null = null;
+  loadingGeo: boolean = false;
 
   constructor(
     private router: Router,
@@ -62,6 +67,21 @@ export class ProfilePage implements OnInit {
       }
     } catch (error) {
       console.log('No se tomó foto', error);
+    }
+  }
+
+  async obtenerUbicacion() {
+    this.loadingGeo = true;
+
+    try {
+      const coordinates = await Geolocation.getCurrentPosition();
+      this.latitude = coordinates.coords.latitude;
+      this.longitude = coordinates.coords.longitude;
+    } catch (error) {
+      console.error('Error obteniendo ubicación', error);
+      alert('Error al obtener ubicación. Asegúrate de tener el GPS activado.');
+    } finally {
+      this.loadingGeo = false;
     }
   }
 

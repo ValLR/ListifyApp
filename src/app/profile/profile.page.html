@@ -49,6 +49,26 @@
     </ion-item>
   </ion-list>
 
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Ubicación Actual</ion-card-title>
+      <ion-card-subtitle>Geolocalización</ion-card-subtitle>
+    </ion-card-header>
+
+    <ion-card-content class="ion-text-center">
+      <ion-button expand="block" (click)="obtenerUbicacion()" [disabled]="loadingGeo">
+        <ion-icon name="location-outline" slot="start"></ion-icon>
+        {{ loadingGeo ? 'Obteniendo...' : 'Obtener Coordenadas' }}
+      </ion-button>
+
+      <div *ngIf="latitude && longitude" style="margin-top: 15px;">
+        <p><strong>Latitud:</strong> {{ latitude }}</p>
+        <p><strong>Longitud:</strong> {{ longitude }}</p>
+        <p style="color: green; font-size: 0.8em;">🌏 Localizado exitosamente</p>
+      </div>
+    </ion-card-content>
+  </ion-card>
+
   <div class="logout-button-container">
     <ion-button (click)="logout()" color="danger" fill="outline" shape="round">
       <ion-icon name="log-out-outline" slot="start"></ion-icon>
